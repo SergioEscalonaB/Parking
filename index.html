@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parking</title>
+  <style>
+    .parking {
+      display: grid;
+      grid-template-columns: repeat(11, 100px); /* 11 columnas para 11 lugares */
+      gap: 10px;
+    }
+    .spot {
+      width: 100px;
+      height: 100px;
+      border: 1px solid black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .rojo {
+      background-color: red;
+      color: white;
+    }
+    .verde {
+      background-color: green;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="parking" id="parking"></div>
+
+  <script type="module">
+    // Tu configuración de Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDnS2rfow-DczZVEF__OXcTSc05-luNkCg",
+      authDomain: "parking-66bb4.firebaseapp.com",
+      projectId: "parking-66bb4",
+      storageBucket: "parking-66bb4.appspot.com",
+      messagingSenderId: "647679889362",
+      appId: "1:647679889362:web:73b66688762c3970e1420b",
+      measurementId: "G-MG0G7HT8YS"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function cargarLugares() {
+      const parkingDiv = document.getElementById('parking');
+      parkingDiv.innerHTML = ''; // Limpiar el contenido para evitar duplicados
+
+      const querySnapshot = await getDocs(collection(db, "lugares"));
+
+      // Crear un array con los documentos
+      const lugares = [];
+      querySnapshot.forEach((doc) => {
+        lugares.push({
+          id: parseInt(doc.id), // Convertir el ID en un número para ordenar
+          estado: doc.data().estado
+        });
+      });
+
+      // Ordenar los lugares por ID
+      lugares.sort((a, b) => a.id - b.id);
+
+      // Añadir cada lugar a la vista, en orden numérico
+      lugares.forEach((lugar) => {
+        const lugarDiv = document.createElement('div');
+        lugarDiv.classList.add('spot');
+        lugarDiv.textContent = lugar.id; // Asignar el número del lugar
+
+        // Cambiar color basado en el estado
+        if (lugar.estado === 'ROJO') {
+          lugarDiv.classList.add('rojo');
+        } else if (lugar.estado === 'VERDE') {
+          lugarDiv.classList.add('verde');
+        }
+
+        parkingDiv.appendChild(lugarDiv);
+      });
+    }
+
+    // Llamar a la función cada 1 segundo para actualizar los datos
+    setInterval(cargarLugares, 3000);
+  </script>
+</body>
+</html>
+
+
+
+
