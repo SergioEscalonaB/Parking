@@ -7,26 +7,31 @@
   <style>
     .parking {
       display: grid;
-      grid-template-columns: repeat(11, 100px); /* 11 columnas para 11 lugares */
-      gap: 10px;
+      grid-template-columns: repeat(11, 120px); /* Ajusta el ancho de las columnas según tu imagen */
+      grid-template-rows: repeat(5, 80px); /* Ajusta la altura de las filas según tu imagen */
+      gap: 5px;
+      background-image: url('images/parq_2d.jpg'); /* Reemplaza 'tu-imagen.jpg' con la ruta de tu imagen */
+      background-repeat: no-repeat;
+      background-size: contain;
+
     }
     .spot {
-      width: 100px;
-      height: 100px;
-      border: 1px solid black;
+      width: 50px; /* Ajusta el ancho para que se vea como un rectángulo */
+      height: 70px;
+      border: 1px solid white; /* Borde blanco para mejor visibilidad */
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 24px;
       font-weight: bold;
+      color: black; /* Texto negro para contraste */
+      background-color: rgba(255, 255, 255, 0.5); /* Fondo semitransparente para legibilidad */
     }
     .rojo {
-      background-color: red;
-      color: white;
+      background-color: rgba(255, 0, 0, 0.7);
     }
     .verde {
-      background-color: green;
-      color: white;
+      background-color: rgba(0, 255, 0, 0.7);
     }
   </style>
 </head>
