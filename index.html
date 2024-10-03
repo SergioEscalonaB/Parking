@@ -7,16 +7,18 @@
   <style>
     .parking {
       display: grid;
-      grid-template-columns: repeat(11, 120px); /* Ajusta el ancho de las columnas según tu imagen */
-      grid-template-rows: repeat(5, 80px); /* Ajusta la altura de las filas según tu imagen */
+      grid-template-columns: repeat(7, 40px); /* Ajusta el ancho de las columnas según tu imagen */
+      grid-template-rows: repeat(5, 80px); /* Ajusta la altura de las filas según tu imagen no mover*/  
+      grid-column-gap: 10px;
       gap: 5px;
       background-image: url('https://i.postimg.cc/8PKzgFX6/PARQUEADERO-2-D.jpg'); /* Reemplaza 'tu-imagen.jpg' con la ruta de tu imagen */
       background-repeat: no-repeat;
       background-size: contain;
 
     }
+      
     .spot {
-      width: 50px; /* Ajusta el ancho para que se vea como un rectángulo */
+      width: 42px; /* Ajusta el ancho para que se vea como un rectángulo ANCHO DEL RECTANGULO */
       height: 70px;
       border: 1px solid white; /* Borde blanco para mejor visibilidad */
       display: flex;

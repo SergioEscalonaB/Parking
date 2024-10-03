@@ -25,6 +25,6 @@ def crear_lugar(identificador, estado):
 #crear_lugar(i, 'VERDE')  # Puedes cambiar el estado inicial si lo deseas
 # Ejemplo de uso:
 
-cambiar_estado(1, "ROJO")
+cambiar_estado(11, "VERDE")
 
 print("Estado actualizado con éxito!")
