@@ -20,8 +20,14 @@ def guardar_base_datos_local(estado_local):
     with open('db_local.json', 'w') as file:
         json.dump(estado_local, file)
 
-# Inicializar la base de datos local con todos los lugares en estado "ROJO"
-estado_local = cargar_base_datos_local()
+# Inicializar la base de datos local y Firebase con todos los lugares en estado "ROJO"
+def inicializar_estados_a_rojo():
+    global estado_local
+    for identificador in estado_local:
+        estado_local[identificador] = "ROJO"
+        cambiar_estado_en_firebase(identificador, "ROJO")  # Actualizar en Firebase
+    guardar_base_datos_local(estado_local)  # Guardar el cambio en la base de datos local
+    print("Todos los lugares se han inicializado a ROJO.")
 
 # Actualizar en Firebase solo si el estado ha cambiado
 def cambiar_estado_en_firebase(identificador, nuevo_estado):
@@ -86,6 +92,12 @@ def checkParkingSpace(imgPro, img):
     # Mostrar el número total de espacios libres
     cv2.putText(img, f"Libres: {contadorEspacios}/{len(posList)}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 200, 0), 2)
 
+# Inicializar la base de datos local
+estado_local = cargar_base_datos_local()
+
+# Inicializar todos los estados a "ROJO" tanto localmente como en Firebase
+inicializar_estados_a_rojo()
+
 while True:
     success, img = cap.read()
     if not success:
@@ -95,7 +107,7 @@ while True:
     imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # Convertir a escala de grises
     imgBlur = cv2.GaussianBlur(imgGray, (3, 3), 1)  # Aplicar desenfoque
     imgThreshold = cv2.adaptiveThreshold(imgBlur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 17, 20)
-    imgMedian = cv2.medianBlur(imgThreshold, 5) #Elimina ruido y sal 
+    imgMedian = cv2.medianBlur(imgThreshold, 5) # Elimina ruido y sal 
     kernel = np.ones((3, 3), np.uint8)
     imgDilate = cv2.dilate(imgThreshold, kernel, iterations=1)
     cv2.imshow("Imagen a procesar: ", imgDilate)
