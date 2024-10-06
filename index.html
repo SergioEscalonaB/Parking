@@ -7,10 +7,10 @@
     <style>
         .parking {
             position: relative;
-            width: 100%; /* O establecer el ancho que prefieras */
+            width: 100%;
             height: 0;
-            padding-bottom: 75%; /* Relación de aspecto basada en la imagen de fondo */
-            background-image: url('https://i.postimg.cc/8PKzgFX6/PARQUEADERO-2-D.jpg');
+            padding-bottom: 75%; /* Relación de aspecto de la imagen */
+            background-image: url('images/parq_2d.jpg');
             background-repeat: no-repeat;
             background-size: contain;
         }
@@ -21,7 +21,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5vw; /* Ajusta el tamaño del texto en relación al tamaño de la ventana */
+            font-size: 1.5vw;
             font-weight: bold;
             color: black;
             background-color: rgba(255, 255, 255, 0.5);
@@ -40,10 +40,11 @@
     <div class="parking" id="parking"></div>
 
     <script type="module">
-        // Tu configuración de Firebase
+        // Importar Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
+        // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "API_KEY",
             authDomain: "parking-66bb4.firebaseapp.com",
@@ -61,31 +62,32 @@
             const parkingDiv = document.getElementById('parking');
             parkingDiv.innerHTML = ''; // Limpiar el contenido para evitar duplicados
 
+            // Cargar el archivo JSON local con las posiciones
+            const response = await fetch('posicion_html.json');
+            if (!response.ok) {
+                console.error('Error al cargar posicion_html.json');
+                return;
+            }
+            const lugares = await response.json();
+
+            // Obtener solo el estado de los lugares desde Firebase
             const querySnapshot = await getDocs(collection(db, "lugares"));
-
-            // Crear un array con los documentos
-            const lugares = [];
+            const estados = {};
             querySnapshot.forEach((doc) => {
-                lugares.push({
-                    id: parseInt(doc.id),
-                    estado: doc.data().estado,
-                    x1: doc.data().x1, // Esquina superior izquierda (X1 en porcentaje)
-                    y1: doc.data().y1, // Esquina superior izquierda (Y1 en porcentaje)
-                    x2: doc.data().x2, // Esquina inferior derecha (X2 en porcentaje)
-                    y2: doc.data().y2  // Esquina inferior derecha (Y2 en porcentaje)
-                });
+                estados[doc.id] = doc.data().estado;
             });
+            console.log(estados); // Verificar los estados obtenidos de Firebase
 
-            // Añadir cada lugar a la vista, calculando el tamaño y la posición
+            // Añadir cada lugar a la vista
             lugares.forEach((lugar) => {
                 const lugarDiv = document.createElement('div');
                 lugarDiv.classList.add('spot');
                 lugarDiv.textContent = lugar.id;
 
-                // Cambiar color basado en el estado
-                if (lugar.estado === 'ROJO') {
+                // Cambiar color basado en el estado obtenido de Firebase
+                if (estados[lugar.id] === 'ROJO') {
                     lugarDiv.classList.add('rojo');
-                } else if (lugar.estado === 'VERDE') {
+                } else if (estados[lugar.id] === 'VERDE') {
                     lugarDiv.classList.add('verde');
                 }
 
@@ -98,19 +100,15 @@
                 lugarDiv.style.width = width + '%';
                 lugarDiv.style.height = height + '%';
 
+                console.log(lugarDiv); // Verificar si el elemento div está creado correctamente
+
                 parkingDiv.appendChild(lugarDiv);
             });
         }
 
-        // Llamar a la función cada 3 segundos para actualizar los datos
+        // Llamar a la función cada 3 segundos solo para actualizar el estado
         setInterval(cargarLugares, 3000);
     </script>
 </body>
 </html>
-
-
-
-
-
-
 
